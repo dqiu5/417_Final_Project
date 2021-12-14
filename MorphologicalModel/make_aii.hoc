@@ -1,0 +1,71 @@
+// Creates Aii cells
+//load_file("nrngui.hoc")
+
+//////////////////////////////////////////////////////////////////
+// Template for making an Aii cell
+begintemplate CellAii
+public soma, dend
+create soma, dend[2]
+
+proc init() {
+	
+	create soma, dend[2]
+
+	soma {
+		nseg = 1
+		diam = 25
+		L = 25
+		Ra = 150
+		insert pas
+		g_pas = 0.000025
+		e_pas = -50
+		insert AIIka
+		gkabar_AIIka = 0.004
+	}
+
+	dend[0] {
+   	 	nseg = 11
+   	 	diam = 0.3
+    	L = 32
+    	Ra = 150
+		insert pas
+		g_pas = 0.000025
+		e_pas = -50
+	}
+
+	dend[1] {
+    	nseg = 1
+    	diam = 2
+    	L = 2
+    	Ra = 150
+		insert pas
+		g_pas = 0.000025
+		e_pas = -50
+    	insert AIIka
+    	insert AIIkm
+    	insert AIIna
+    	gkabar_AIIka = 0.08
+	}
+	
+	// Connect things together
+	connect dend[0](0), soma(0)
+	connect dend[1](0), dend[0](1)
+	// topology()
+}
+
+endtemplate CellAii
+//////////////////////////////////////////////////////////////////
+
+// init()
+
+objref cell_aii, Aii
+
+Aii = new List()
+NUMaii = 1
+// NUMaii = 18
+
+for(i=0;i<NUMaii;i=i+1){
+	cell_aii = new CellAii()
+	Aii.append(cell_aii)
+	print "Aii: ", i
+}

@@ -1,0 +1,159 @@
+objref tvec, vvec, datafile, m
+objref veclist  // will hold all the stim Vectors and write vectors
+strdef Vfile
+
+NUMPTS = 180 //224//289
+timestep = 1
+tstop = 500
+dt = 0.02
+steps_per_ms = 50
+v_init = -60
+tmp_ap = 0
+
+NUMSTEPS = 0 // # of compartments
+tvec = new Vector(NUMPTS)
+
+// Get number of compartments in entire model
+forsec "Cell[" {
+	NUMSTEPS = NUMSTEPS + nseg
+}
+
+// Open extracellular voltages file
+
+// TNSRE PAPER - Symmetric waveform design /////////////////////////
+Vfile = "voltage/SymWaveform_P120_x280_y190_z25.v"
+///////////////////////////////////////////////////////
+
+// Set time vector 
+// (each step is 2.5 ms (from 1/(20steps*20 Hz)) or 1 ms for biphasic pulses
+for i=0,NUMPTS-1 {
+	tvec.x[i] = i*timestep + 1
+}
+
+// Insert extracellular mechanism into all compartments
+forall {
+for(x,0) {
+	insert extracellular
+	}
+}
+
+// Setup vector to record voltage at the soma of 606 (Cell[21].soma[0])
+vvec = new Vector()
+vvec.record(&Cell[21].soma[0].v(0.5))
+
+// Searches through a vector of voltages to see if there is an AP (Vm>0)
+func check_ap(){  //check if there is any action potential or not
+for i = 0,vvec.size()-1 {
+	if(vvec.x(i)>10){
+        return 1 // 1 means occurance of action potential
+        }
+}
+return 0
+}
+
+// Setup stimulation - apply extracellular stimulation
+proc setstim() { localobj tmpvec, dfile, ma
+  dfile = new File()
+  dfile.ropen(Vfile)
+ // dfile.ropen("voltage/range/P16/RCSP16_one_280_190_39.v")
+  ma = new Matrix() 
+  ma.scanf(dfile,NUMPTS,NUMSTEPS)
+  
+  rindex=0
+  veclist = new List()
+  forsec "Cell[" { 
+    for (x, 0) {  // iterate over internal nodes only
+      tmpvec = ma.getcol(rindex)
+      
+      //scale extracellular voltage
+      tmpvec = tmpvec.mul(0.85)
+      tmpvec.play(&e_extracellular(x), tvec)
+      veclist.append(tmpvec)
+      rindex = rindex + 1
+    }
+  }
+}
+
+setstim()
+
+// Set variables
+objref tvecw, seclist, veclistw // will hold all the stim Vectors and write vectors
+i = 0
+j = 0
+
+// Capture data
+tvecw = new Vector()
+veclistw = new List()
+tvecw.record(&t)
+
+// Create vectors for recording the voltage at the middle of each segment and the endpoint coordinates
+objref tmpvec2
+
+forall { 
+	tmpvec2 = new Vector()
+    tmpvec2.record(&v(0.5))
+	veclistw.append(tmpvec2)
+}
+
+// Run the simulation
+run()
+
+// Function for writing the values to file (implemented below)
+proc vtofile() { local i localobj tfil
+	// Open the file
+	if (strcmp($s4,"soma") == 0) {
+		print "writing to ", $s3
+		tfil = new File()
+		tfil.wopen($s3)
+	} else {
+		tfil = new File()
+		tfil.aopen($s3)
+	}
+	
+	// Print the data
+	for i=0,$o1.size()-1 tfil.printf("%8.8f\t%8.8f\n", $o1.x[i], $o2.x[i])
+
+	tfil.close()
+}
+
+// Print all the voltages to file
+objref tfil
+
+tmp_ind = tvecw.size()
+
+i = 0
+
+forall {	
+	if (strcmp(secname(),"Cell[2].soma[0]") == 0 ){	
+		print "Writing output for "
+		print secname()
+		tfil = new File()
+//		tfil.aopen("SingleBC_AiiOsc_Cell2.txt")
+		tfil.aopen("TwentyBC_AiiOsc_Cell2_Sym.txt")
+		for j=0,tmp_ind-1 tfil.printf("%8.8f\t%8.8f\n", tvecw.x[j], veclistw.o(i).x[j])
+		tfil.close()
+	}
+	
+	if (strcmp(secname(),"Cell[21].soma[0]") == 0 ){	
+		print "Writing output for "
+		print secname()
+		tfil = new File()
+//		tfil.aopen("SingleBC_AiiOsc_Cell21.txt")
+		tfil.aopen("TwentyBC_AiiOsc_Cell21_Sym.txt")
+		for j=0,tmp_ind-1 tfil.printf("%8.8f\t%8.8f\n", tvecw.x[j], veclistw.o(i).x[j])
+		tfil.close()	
+	}
+	
+	if (strcmp(secname(),"CellAii[0].soma") == 0 ){
+		print "Writing output for "
+		print secname()	
+		tfil = new File()
+//		tfil.aopen("SingleBC_AiiOsc_CellAii0.txt")
+		tfil.aopen("TwentyBC_AiiOsc_CellAii0_Sym.txt")
+		for j=0,tmp_ind-1 tfil.printf("%8.8f\t%8.8f\n", tvecw.x[j], veclistw.o(i).x[j])
+		tfil.close()		
+	}
+
+
+	i = i + 1
+}

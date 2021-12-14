@@ -1,0 +1,151 @@
+create soma, dend[2]
+
+// Key parameters
+celsius = 20 // temperature
+pi = 3.141592654	
+v_init = -50 // [mV] initial voltage
+tstop = 1000 // [ms] total simulation time 100ms for normal simulation, 7.548113ms for peak
+
+soma {
+	nseg = 1
+	diam = 25
+	L = 25
+	Ra = 150
+	insert pas
+	g_pas = 0.000025
+	e_pas = -50 // -10 mV for WT
+	insert AIIka
+	gkabar_AIIka = 0.004
+}
+
+dend[0] {
+   	nseg = 1
+   	diam = 0.3
+    L = 32
+    Ra = 150
+	insert pas
+	g_pas = 0.000025
+	e_pas = -50 // -10 mV for WT
+    insert hh
+}
+
+dend[1] {
+    nseg = 1
+    diam = 2
+    L = 2
+    Ra = 150 // ohm/cm
+	insert pas
+	g_pas = 0.000025
+	e_pas = -50 // -10 mV for WT
+    insert AIIka
+    insert AIIkm
+    insert AIIna
+    gkabar_AIIka = 0.08
+    //insert spike not in use
+    insert extracellular // use when doing extrastim
+}
+	
+// Connect things together
+connect dend[0](0), soma(0)
+connect dend[1](0), dend[0](1)
+
+
+//Extracellular stimulation parameter
+amp = 0.01 //[mA] amplitude
+polarity = -1 // -1 for cathodic
+dt = 0.01 // [ms] time step
+delay = 10		//[ms] delay		
+pw = 1           //[ms] pulse width
+
+//Morphological parameters		
+axonnodes  = 1  //number of SIS
+length = dend[1].L //[um] node length
+nodelength = dend[1].L //[um] 
+d =  dend[1].diam  // [um] node diameter
+
+//Electrical parameters		
+ sigmae = 0.1 // [S/m] extracellular conductivity
+ rhoa = (dend[1].Ra*10^4)*(18.85) // [Ohm-um] specific axoplasmic resistance
+ rhoe = 100*10^4 //[Ohm-um]  specific extracellular resistance
+
+ //Electrode location
+ xelec=32+25+2 // [um] electrode x-coordinate
+ yelec=0         //[um] electrode y-coordinate
+ zelec=500 //[um] electrode z-coordinate
+
+ objref Vext, x, y, z, exIClmp
+ Vext=new Vector(3,0)    //extracellular voltage applied to nodes
+ x=new Vector(3,0)       //x-coordinate for all the nodes
+ y=new Vector(3,0) 	//y-coordinate for all the nodes
+ z=new Vector(3,0)	//z-coordinate for all the nodes
+
+// create electrode  //create model dummy compartment
+
+ proc xypos(){
+ 	x.x[0]=32+25+1
+ 	y.x[0]=0
+	z.x[0]=0
+
+ 	x.x[1]=32+12
+ 	y.x[1]=0
+ 	z.x[1]=0
+
+ 	x.x[2]=16
+ 	y.x[2]=0
+ 	z.x[2]=0
+ }
+
+ proc volt(){
+ 	xypos()
+ 	for k=0, 3-1 {
+ 		r = sqrt((zelec-z.x[k])^2 + (yelec-y.x[k])^2 + (xelec-x.x[k])^2)  //[um] distance from electrode
+ 		I = amp*polarity
+		Vext.x[k]=(I*rhoe)/(4*pi*r)   //[mV]
+ 	}
+ }
+
+create electrode
+ proc stimul() {
+ 	volt()
+ 	electrode{
+		exIClmp=new IClamp()
+		//exIClmp=new IinjLT()
+ 		exIClmp.loc(0.5)
+ 		exIClmp.del=250
+ 		exIClmp.dur=500
+ 		exIClmp.amp=1
+        // exIClmp.ton = 500
+         //exIClmp.toff = 200
+        // exIClmp.num = 1
+}
+	
+}
+
+proc advance(){
+     dend[1] e_extracellular(0.5)=(exIClmp.i)*Vext.x[0]	//[mV]
+     fadvance()
+}
+
+topology()
+
+stimul()
+run()
+
+// // Intracellular Stimulation 
+// objectvar stim
+// dend[1] stim = new IinjLT(0.5) // injected at one end
+// stim.del = 100
+// stim.amp = -200 // [pA] stimulus current amplitude (-) depolariing current
+// stim.ton = 500
+// //stim.toff = 200
+// stim.num = 1
+
+// objref dv
+// dv = new Vector()
+// dv.record(&soma.v(.5))
+// init()
+// run()
+
+//load_file("plotsession.ses") // no stim ses file
+//load_file("plotsession2.ses") // intracellular stim ses file
+load_file("plotsession3.ses") // extracellular stim ses file

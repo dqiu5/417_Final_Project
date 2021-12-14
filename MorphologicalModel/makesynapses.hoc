@@ -1,0 +1,120 @@
+objref synfile
+objref strobj
+//objref m,f
+strdef comname, tname, sname, synstring, netstring, synline
+
+//NUMSYN = 418
+NUMSYN = 997			// max # of projections
+syn_ind = 0
+gap_ind = 0
+strobj = new StringFunctions()
+
+///////////////////////////////////////////////////////////////////////////////////	
+// Function for finding the cell index
+func get_ind() {
+	for(j=0;j<m.nrow;j=j+1) {
+		if(m.x[j][1]==$1) {
+			return j
+		}
+	}
+	return (-1)
+}
+
+///////////////////////////////////////////////////////////////////////////////////	
+// Create array for number of synapses and gap junctions
+objectvar syn[NUMSYN]
+objectvar gaps[NUMSYN]
+objectvar ConeToBip[NUM_BC]
+
+// Load in synapse file containing synapse location and weight info
+ropen("606projections.txt")
+
+// Loop through synapses
+for(i=0;i<NUMSYN;i=i+1) {
+	// Read in first line, store in temp variables
+	snum = fscan()
+	tnum = fscan()
+	sx = fscan()
+	sy = fscan() 
+	sz = fscan()
+	tx = fscan()
+	ty = fscan() 
+	tz = fscan()
+
+	// Get line to check type of synapse
+	getstr(synline,1)
+
+	w = fscan()
+	w = w*0.001	
+
+	// If the target and source are not the same, add synapse
+	if (snum != tnum) {
+		// Get indices for source and target
+		Sind = get_ind(snum)
+		Tind = get_ind(tnum)
+		
+		if(Sind != (-1) && Tind != (-1)){
+		
+		// Find compartment with synapse (source and target)
+		interpxyz(Sind,sx,sy,sz)
+		sname = comname
+		interpxyz(Tind,tx,ty,tz)
+		tname = comname
+		
+		
+		///////////////////////////////////////////////////////////////////////////////////	
+		// RIBBON SYNAPSE
+		if (strobj.substr(synline,"Ribbon")>(-1)){
+			
+			sprint(synstring,"%s%s%d%s",tname," syn[",syn_ind,"] = new ExpSyn(0.5)")
+			execute(synstring)
+			syn[syn_ind].e=0
+			syn[syn_ind].tau=2
+			
+			// INCLUDING AII OSCILLATIONS: (CBC: only Ca and Pas, gpas = 0.00008; tuned weight to match oscillations as close to Choi et al 2014 as possible)
+			sprint(netstring,"%s%s%d%s%d%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-41.28,0,w*50))" )
+			//sprint(netstring,"%s%s%d%s%d%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-40,0,w*10))" )
+
+			// NO AII OSCILLATIONS: (CBC: 5 channel model, with gpas = 0.0077)
+			////sprint(netstring,"%s%s%d%s%d%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-37.28,0,w))" )
+//			sprint(netstring,"%s%s%d%s%d%s%g%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-32,1,",w,"))" )
+
+			execute(netstring)
+			syn_ind = syn_ind + 1
+					
+		}
+		
+		///////////////////////////////////////////////////////////////////////////////////	
+		// CONVENTIONAL SYNAPSE (INHIBITORY)
+		 if (strobj.substr(synline,"Conventional")>(-1)){
+		 	sprint(synstring,"%s%s%d%s",tname," syn[",syn_ind,"] = new ExpSyn(0.5)")
+		 	execute(synstring)
+		 	syn[syn_ind].e=-70
+			syn[syn_ind].tau=10
+			
+			// INCLUDING AII OSCILLATIONS
+			sprint(netstring,"%s%s%d%s%d%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-68,0,w*50))" )
+			
+			// NO AII OSCILLATIONS
+//			sprint(netstring,"%s%s%d%s%d%s%g%s",sname," Cell[",Tind,"].nclist.append(new NetCon(&v(0.5),syn[",syn_ind,"],-68,1,",w,"))" )
+			execute(netstring)
+			syn_ind = syn_ind + 1
+			
+		 	
+		 }
+		
+		///////////////////////////////////////////////////////////////////////////////////	
+		// GAP JUNCTIONS
+		if (strobj.substr(synline,"Gap")>(-1)){
+			gaps[gap_ind] = new Gap()
+			sprint(synstring,"%s%s",sname," gaps[gap_ind].src(0.5)")
+			sprint(netstring,"%s%s",tname," gaps[gap_ind].target(0.5)")
+			execute(synstring)
+			execute(netstring)
+			gaps[gap_ind].g(0.5)
+			
+			gap_ind = gap_ind + 1
+		} 
+		}
+	}
+}

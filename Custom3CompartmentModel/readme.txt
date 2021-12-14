@@ -1,0 +1,3 @@
+To run the simulations for the single three-compartment amacrine cell:
+
+Run the aii_EC.hoc.This file runs using three ses files: plotsession.ses, plotsession2.ses, and plotsession3.ses, which model no stimulation, intracellular stimulation, and extracellular sitmulation conditions respectively. The aii_EC.hoc file itself runs independently of the full Loizos network and only uses the AII_KA, AII_KM, and AII_Na mod files.

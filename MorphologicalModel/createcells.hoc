@@ -1,0 +1,276 @@
+//=================================================================
+//                  Load cells templates			  //		
+//=================================================================
+
+load_file("Rod.tem")
+load_file("Cone.tem")		
+load_file("Bip.tem")
+load_file("A2.tem")
+load_file("Ganglion.tem")
+				
+objref rod_bip[nrodbipx][nrodbipy], rod[nrodx][nrody], cone[nconex][nconey]
+objref A2_cell[na2x][na2y],GAN[nganx][ngany], cone_bip[nconebipx][nconebipy]
+// objref brightcurr[nrodx][nrody],dimcurr[nrodx][nrody],input_cone[nconex][nconey],random
+objref brightcurr[na2x][na2y],dimcurr[na2x][na2y],input_cone[nconex][nconey],random   //modified for EECS 417 Project
+random = new Random(seed)
+
+
+//=================================================================
+//                      Create cells				  //		
+//=================================================================
+print "Creating cells. This may take some time."
+
+// Create Rods
+
+  for i = 0, nrodx-1 {
+    for j = 0, nrody-1 {
+      rod[i][j] = new Rod()
+    }
+  }
+
+// Create Cones
+
+  for i = 0, nconex-1 {
+    for j = 0, nconey-1 {
+      cone[i][j] = new Cone()
+    }
+  }
+  
+// Create Rod bipolar cell
+
+  for i = 0, nrodbipx-1 {
+    for j = 0, nrodbipy-1 {
+      rod_bip[i][j] = new Bip()
+    }
+  }
+
+// Create Cone bipolar cell
+
+  for i = 0, nconebipx-1 {
+    for j = 0, nconebipy-1 {
+      cone_bip[i][j] = new Bip()
+      cone_bip[i][j].soma.gkabar_IA(0.5) = 0   // USUI et al.
+    }
+  }
+
+// Create A2
+
+  for i = 0, na2x-1 {
+    for j = 0, na2y-1 {
+      A2_cell[i][j] = new A2()
+    }
+  }
+
+
+// Create Ganglion
+
+  for i = 0, nganx-1 {
+    for j = 0, ngany-1 {
+      GAN[i][j] = new Ganglion()
+    }
+  }
+
+
+
+//=================================================================
+//                      Add input currents		       	  //		
+//=================================================================
+
+
+// proc insert_iclamps() { local k,m,ii,jj   // 1 arg - amp 
+
+
+//  InputNumber =   ($2/100)*rodtotal 
+ 
+//   printf ("\n%d Rods receiving input\n",InputNumber)
+
+//   for k = 0, nrodx-1 {
+//     for m = 0, nrody-1 {
+//       rod[k][m].soma brightcurr[k][m] = new IinjLT(0.5)
+//       brightcurr[k][m].del = stim_init
+//       brightcurr[k][m].ton = 6000
+//       brightcurr[k][m].amp =0
+      
+//       rod[k][m].soma dimcurr[k][m] = new IinjLTDim(0.5)
+//       dimcurr[k][m].del = stim_init
+//       dimcurr[k][m].ton = 6000
+//       dimcurr[k][m].ssI=0
+//       dimcurr[k][m].amp =0 
+// 	}
+//    }
+   
+  
+
+//  for k = 0, nconex-1 {   // Dark current in cones
+//     for m = 0, nconey-1 {
+//       cone[k][m].soma input_cone[k][m] = new IinjLT_cone(0.5)
+//       input_cone[k][m].amp=0
+//       input_cone[k][m].del = 0
+//       input_cone[k][m].ton = 6000
+// 	}
+//    }
+
+// for i=0,InputNumber {
+
+//   ii = int(random.uniform(0, nrodx))
+//   if (ii == nrodx ) { ii=nrodx-1 }
+//   jj = int(random.uniform(0, nrody))
+//   if (jj == nrody ) { jj=nrody-1 }
+//   if ($1>=30) {
+  
+//   brightcurr[ii][jj].amp = $1}else{
+//   dimcurr[ii][jj].amp = $1}	
+//   i=i+1
+
+// 	}
+
+// } // end proc
+
+//MODIFIED FOR EECS 417 Project: Bypass the photoreceptors and bipolar cells and directly stimulate the amacrine cells
+//need to change to extracellular stimulation
+//define electrode location
+// xelec = 0 //[um] electrode x-coordinate
+// yelec = 0 //[um] electrode y-coordinate
+// zelec = (0.1*1e-2)/(1e-6) //[um] electrode z-coordinate
+
+// A2Length = 7 //from A2.tem
+
+// objref Vext, x, y, z, exIClmp
+// Vext = new Vector(A2total,0) //extracellular voltage applied to nodes
+// x = new Vector(A2total,0)     //x-coordinate for all nodes
+// y = new Vector(A2total,0)     //y-coordinate for all nodes
+// z = new Vector(A2total,0)     //z-coordinate for all nodes
+
+// proc calc_xyz_pos(){
+//     //start point
+//     //TO DO: try doing ".y[0]"
+//     x.x[0]=-1+(A2Length/2) //um 
+//     y.x[0]=0    //um
+//     z.x[0]=0    //um
+
+//     //increment each compartment by the node length in x
+//     for k = 0, na2x-1 {
+//       for m = 0, na2y-1 {
+//         x.x[k]= x.x[k-1]+A2Length
+//         y.x[i] = 0
+//         z.x[i] = 0
+//       }
+//     }
+// }
+
+// //Took from HW4, but should do research into typical specific extracellular resistance
+// rhoe = 1/(0.1*1e-6) //ohm-um specific extracellular resistance
+// pi = 3.141592654
+// proc volt(){
+//     calc_xyz_pos()
+//     for k = 0, na2x-1 {
+//       for m = 0, na2y-1 {
+//         r = sqrt((zelec-z.x[k])^2 + (yelec-y.x[k])^2 + (xelec-x.x[k])^2)    //um distance from electrode
+//         I = amp
+//         Vext.x[k]=(I*rhoe)/(4*pi*r) //mV 
+//       }
+//     }
+// }
+
+// //extracellular stimulus
+// //electrode is a dummy compartment that holds exIClmp
+// //??? is this correct?
+// create electrode
+// proc stimul() {
+// 	volt()
+// 	electrode{
+// 		exIClmp=new IClamp()
+// 		exIClmp.loc(0.5)  
+// 		exIClmp.del=10   //ms delay
+// 		exIClmp.dur=100   //ms pulse width
+// 		exIClmp.amp=amp   //mA amplitude
+// 	}	
+// }
+
+// // assign e_extracellular to each node
+// // when stimulus is off, e_extracellular = 0, when it is on, e_extracellular is Vext
+// proc advance(){
+// 	for k = 0, na2x-1 {
+//     for m = 0, na2y-1 {
+// 		A2_cell[k][m] e_extracellular(0.5) = (exIClmp.i)*Vext.x[k]	//[mV]
+// 	  }
+//   }
+// 	fadvance()
+// }
+
+// stimul()
+// run()
+
+
+proc insert_iclamps() { local k,m,ii,jj   // 1 arg - amp 
+
+
+ InputNumber =   ($2/100)*A2total 
+ 
+  printf ("\n%d A2 receiving input\n",InputNumber)
+
+  for k = 0, na2x-1 {
+    for m = 0, na2y-1 {
+      A2_cell[k][m].soma brightcurr[k][m] = new IinjLT(0.5)
+      brightcurr[k][m].del = stim_init
+      brightcurr[k][m].ton = 6000
+      brightcurr[k][m].amp =0
+      
+      A2_cell[k][m].soma dimcurr[k][m] = new IinjLTDim(0.5)
+      dimcurr[k][m].del = stim_init
+      dimcurr[k][m].ton = 6000
+      dimcurr[k][m].ssI=0
+      dimcurr[k][m].amp =0 
+	}
+   }
+
+for i=0,InputNumber {
+
+  ii = int(random.uniform(0, na2x))
+  if (ii == na2x ) { ii=na2x-1 }
+  jj = int(random.uniform(0, na2y))
+  if (jj == na2y ) { jj=na2y-1 }
+  if ($1>=30) {
+  
+  brightcurr[ii][jj].amp = $1}else{
+  dimcurr[ii][jj].amp = $1}	
+  i=i+1
+
+	}
+
+} // end proc
+
+//=================================================================
+//                      Change Ih conductance		       	  //		
+//=================================================================
+
+// proc block_ih(){
+
+// for i = 0, nrodx-1 {
+//     for j = 0, nrody-1 {
+//       rod[i][j].soma.ghbar_h=$1
+//     }
+//   }
+// }
+
+//   printf("\n")
+//   access rod[0][0].soma
+
+//MODIFIED FOR EECS 417 Project: Bypass the photoreceptors and bipolar cells and directly stimulate the amacrine cells
+proc block_ih(){
+
+for i = 0, na2x-1 {
+    for j = 0, na2y-1 {
+      A2_cell[i][j].soma.ghbar_h=$1
+    }
+  }
+}
+
+  printf("\n")
+  access A2_cell[0][0].soma
+
+printf ("%d Rods created\n",rodtotal)
+printf ("%d Cones created\n",conetotal)
+printf ("%d Bipolar cells created\n",nrodbipx*nrodbipy)
+printf ("%d A2 Amacrine cells created\n",A2total)
+printf ("%d Ganglion cells created\n",gantotal)

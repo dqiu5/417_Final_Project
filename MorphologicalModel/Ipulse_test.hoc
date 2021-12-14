@@ -1,0 +1,34 @@
+
+celcius = 20
+v_init = -65 //mV
+tstop = 100  //???
+
+create axon
+
+axon.diam = 200 //um?
+axon.L = 10.1*(10000) //um? 10.1cm
+axon.nseg = 101
+axon.Ra = 100 //ohms*cm
+//Re = 30 Ohms*cm, would this even be used?- in part b and c
+//time step 0.025ms? this is the default
+
+axon insert hh
+
+axon insert extracellular
+
+axon psection() //what does psection do?
+
+create electrode
+objectvar stim
+
+electrode{
+    stim = new Ipulse1()
+    stim.loc(.5)
+    // stim.del = 0.1
+    stim.ton = 10    //???
+    stim.toff = 10    //???
+    stim.num = 6
+    stim.amp = -10  //???
+}
+
+run()

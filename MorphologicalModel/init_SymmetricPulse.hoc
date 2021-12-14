@@ -1,0 +1,19 @@
+load_file("nrngui.hoc")
+
+// // Functions for applying synapse locations and gap junctions
+// load_file("interpxyz.hoc")		// Functions for locating synapses' compartments
+// load_file("gap.hoc")
+
+// // Loads all celltypes from celltypes.txt, etc.
+load_file("makecells.hoc")
+// load_file("makesynapses.hoc")
+
+// Add in oscillatory input from degenerated Aii cells
+load_file("make_aii.hoc")
+// load_file("make_aii_gj.hoc")
+
+// // Plot output of CBCs, Aiis, and GCs separately
+// load_file("plot_CBC_AII_GC.ses")
+
+// Apply stimulation
+load_file("stim_Symmetric.hoc")		    // Loads voltages for each compartment and applies using 'extracellular'

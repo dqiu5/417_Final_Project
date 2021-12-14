@@ -1,0 +1,149 @@
+59482	AC
+40035	AC
+40037	AC
+40039	AC
+40041	AC
+55403	AC (mixed synapse, AC<::GC)
+40044	AC
+53778	None
+42094	AC
+53872	None
+40051	AC
+40053	AC
+15977	CBb6 [G ?, :: Aii]
+12408	GC 
+40057	AC
+40059	AC
+59499	None
+54423	None
+52382	CBb
+5281	YAC C3 [axon > rod BC > CBb]
+162		YAC
+45731	Bipolar
+45220	AC [poss IAC :: IAC]
+168		CBb3m [:: CBb3m tip]
+170		CBb4w [:: Cbb4w tip]
+5292	CBb3m [:: CBb3m tip]
+44205	None
+42159	None
+176		CBb3-4i
+177		CBb6
+44212	None
+44222	o
+7576	AC [poss GAC]
+44229	None
+289		GAC
+44237	None
+44241	None
+5450	YAC
+51923	None
+53976	None
+47833	None
+55517	AC (mixed synapse AC::<GC)
+44256	CBb [G+ NE edge]
+53115	None
+38632	o
+24303	CBb3 [:: CBb3]
+51469	CBb
+54232	None
+12564	YAC
+277		CBb4i [G+,::]
+32534	AC
+45847	None
+23836	YAC [process]
+51997	None
+33057	None
+44329	None
+38698	None
+6958	CBb5w Tip [G+, :: Aii]
+25392	AC beaded [>RB <>CBb]
+44338	CBb
+307		CBb4w [:: Cbb4w tip]
+46388	BC
+55098	o
+54078	GAC [?]
+10559	YAC
+5442	YAC
+324		CBb4w [:: Cbb4w tip]
+10565	AC
+45894	CBb [::Aii]
+330		CBb4w [:: Cbb4w tip]
+5451	YAC
+335		CBb4i [:: CBb5, G+]
+5456	CBb4-5i [G+]
+47445	BC
+5468	CBb4i
+55610	o
+45406	None
+39909	None
+8040	CBb4-5i [G+, :: Aii]
+5481	YAC
+366		CBb4i [:: CBb5, G+, ::Aii]
+44970	GC [ds?]
+7024	CBb4w [:: Cbb4w tip]
+5608	CBb3-4i
+5491	GAC
+372		CBb3m tip
+35193	YAC [ON]
+5499	CBb4-5i [::CBb3m, ::CBb4w]
+39915	o
+48516	CBb4w [:: Cbb4w tip]
+5513	CBb4w [:: Cbb4w tip]
+5537	CBb4-5i [:: CBb5, G+]
+49554	BC
+5528	CBb4-5i
+5530	CBb4w [:: Cbb4w tip]
+5531	CBb3-4i
+54245	AC
+5534	CBb4w [:: Cbb4w tip]
+35653	AC [>rod BC]
+53104	None
+5541	CBb5i [G+]
+42406	None
+35240	YAC [ C1]
+7594	GC [Y+, B+1, ON]
+428		CBb3-4-5i
+42416	AC
+30130	AC  [C1]
+61598	AC
+5561	CBb3m [:: CBb3m tip]
+5565	CBb3m [:: CBb3m tip]
+22974	GC transit
+55232	None
+5057	AC
+450		CBb4-5-6i [G+, ::]
+53153	None
+461		CBb5w [:: CBb5w tip]
+47267	BC
+35288	None
+4569	CBb3m tip [:: CBb3m tip]
+39900	None
+9693	CBb5-6i
+31710	CBb [GBC]
+5600	CBb5-6i [G+, :: Aii]
+5601	CBb4w [:: Cbb4w tip]
+6117	CBb4w [:: Cbb4w tip]
+5606	CBb4-5i [:: CBb5, G+]
+5607	CBb3-4i [:: CBb5, G+, :: Aii]
+6120	CBb3-4i [G+]
+47593	None
+6123	CBb5-6i
+39917	None
+46589	ON AC [<CBb; ::GC]
+39922	o
+39931	None
+6141	CBb
+34302	None
+51711	None
+51715	BC
+5637	CBb3-4i 5637 [G+, :: Aii]
+53768	None
+34315	None
+5645	CBb5w [:: CBb5w tip]
+5650	CBb4w [:: Cbb4w tip]
+39939	None
+39957	YAC
+46105	BC
+39963	o
+39965	None
+39941	None

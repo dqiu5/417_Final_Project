@@ -1,0 +1,65 @@
+
+
+objectvar gaps_aii[NUMaii]
+double CBC_with_Aii[NUMaii]
+strdef synstring, netstring
+
+
+CBC_with_Aii[0] = 2
+CBC_with_Aii[1] = 12
+CBC_with_Aii[2] = 14
+CBC_with_Aii[3] = 32
+CBC_with_Aii[4] = 57
+CBC_with_Aii[5] = 60
+CBC_with_Aii[6] = 78
+CBC_with_Aii[7] = 83
+CBC_with_Aii[8] = 84
+CBC_with_Aii[9] = 85
+CBC_with_Aii[10] = 94
+CBC_with_Aii[11] = 101
+CBC_with_Aii[12] = 102
+//CBC_with_Aii[13] = 105
+CBC_with_Aii[13] = 106
+//CBC_with_Aii[15] = 109
+CBC_with_Aii[14] = 111
+CBC_with_Aii[15] = 116
+CBC_with_Aii[16] = 117
+CBC_with_Aii[17] = 119
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+begintemplate gapjunction
+  public r, setg
+  objref con1, con2
+
+  proc init() {
+    objref con1, con2
+
+    $o1.sec con1 = new gap(0.5)
+    $o2.sec con2 = new gap(0.5)
+
+    setpointer con1.vgap, $o2.sec.v(0.5)
+    setpointer con2.vgap, $o1.sec.v(0.5)
+  }
+
+endtemplate gapjunction
+/////////////////////////////////////////////////////////////////////////////
+
+
+objref newgap, sr1, sr2
+
+//Cell[0].soma sr1 = new SectionRef()
+//CellAii[0].soma sr2 = new SectionRef()
+//newgap = new gapjunction(sr1, sr2)
+
+gap_ind = 0
+
+for(i=0; i<NUMaii; i=i+1){
+	access Cell[CBC_with_Aii[i]].soma
+	sr1 = new SectionRef()
+	access CellAii[i].soma
+	sr2 = new SectionRef()
+	gaps_aii[i] = new gapjunction(sr1,sr2)
+	print "GJ: ", i, " Cell[", CBC_with_Aii[i], "] CellAii[", i, "]"
+}

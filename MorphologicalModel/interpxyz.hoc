@@ -1,0 +1,68 @@
+// original data, irregularly spaced
+objref xx, yy, zz, length
+objref strtmp
+//objref comname
+strdef stemp
+//strdef comname
+
+// interpolated data, spaced at regular intervals
+objref xint, yint, zint, range
+objref fout
+
+// Find the location of the synapse
+proc interpxyz() { local ii, nn, kk, xr, xtest, ytest, ztest, syndist,len, len1,len2
+	xtest = $2
+	ytest = $3
+	ztest = $4
+	syndist = 10
+	strdef comname
+	comname = secname()
+	
+	//sprint(stemp,"%s%d%s","Cell",$1,".*")
+	sprint(stemp,"%s%d%s","Cell[",$1,"].*")
+	
+	forall {
+
+	
+		if (issection(stemp)) {
+	  // get the data for the section
+		nn = n3d()
+		xx = new Vector(nn)
+		yy = new Vector(nn)
+		zz = new Vector(nn)
+		length = new Vector(nn)
+
+	  
+		
+		for (x,0) { // only internal nodes
+			for ii = 0,nn-1 {
+				xx.x[ii] = x3d(ii)
+				yy.x[ii] = y3d(ii)
+				zz.x[ii] = z3d(ii)
+				length.x[ii] = arc3d(ii)
+				//fprint("%f\t%f\t%f\t%f\n",xx.x[ii],yy.x[ii],zz.x[ii],length.x[ii])
+				
+				// Compare to synapse location. find compartment for closest node
+				testdist = sqrt((xtest-x3d(ii))*(xtest-x3d(ii)) + (ytest-y3d(ii))*(ytest-y3d(ii)) + (ztest-z3d(ii))*(ztest-z3d(ii)))
+				if (testdist < syndist) {
+					comname = secname()
+					syndist = testdist
+					len1 = arc3d(ii)
+				}
+			}
+			
+			if (testdist == syndist){
+				len2 = length.x[nn-1]
+			}
+	  	}
+	len = len1/len2
+	if (len < 0.00001){
+		len = 0.1
+	} if (len > 0.99) {
+		len = 0.9
+	}
+
+	}
+	}
+}
+

@@ -1,0 +1,15 @@
+clc;
+clear;
+close all;
+
+%Project Plotting Voltage vs Time
+
+data = importdata('trial_custom_stimulus2.txt');
+Vext = data(:,2);
+xpos = data(:,1);
+plot(xpos, Vext);
+
+data = importdata('trial_custom_stimulus2.txt');
+Vext = data(:,2);
+xpos = data(:,1);
+plot(xpos, Vext);
