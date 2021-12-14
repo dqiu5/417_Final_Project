@@ -1,33 +1,38 @@
-ipulse1.mod
-NMODL specification for Ipulse1.
+EECS 417 Project README
 
-ipulse2.mod
-NMODL specification for Ipulse2.
+HOC Files Needed:
+1. init_AssymmetricPulse.hoc (modified for project)
+2. makecells.hoc            (modified for project)
+3. stim_Asymmetric.hoc      (modified for project)
 
-These Point Processes are current clamps for delivering one or 
-more current pulses at regular intervals.  Both use self-events 
-to govern switching the current on and off.  Although these 
-mechanisms have NET_RECEIVE blocks, they will not respond to 
-external events, so it won't do any good to try to attach 
-them to an event source such as a NetStim.
+MOD Files Needed:
+1. ipulse1.mod
+2. A2hh_k.mod
+3. A2hh_na.mod
+4. AII_KA.mod
+5. AII_KM.mod
+6. AII_Na.mod
 
-The chief difference between these mechanisms is how one 
-specifies the stimulus train.  Ipulse1 needs ton (duration of 
-current pulse) and toff (interpulse interval), 
-while Ipulse2 needs dur (same as Ipulse1's ton) and per 
-(the period of the stimlus train, which is the same as 
-Ipulse1's ton+toff).  A bit of code in ipulse2.mod forces 
-per to be longer than dur.
+OTHER Files Needed:
+1. swc files in morphology folder 
+2. v files in voltage folder
+3. 606celltypes.txt         (modified for project)
 
-ipulse3.mod
-NMODL specification for Ipulse3.
+To Run Simulation:
+1. run "mknrndll <modfile name>.mod" to compile the mod files
+2. run "./init_AssymmetricPulse.hoc"
+3. Open graph->space plot in GUI menu
+4. Right click->shape style->show diam
+5. Right click->time plot
+6. Click on the sections you want to plot
+7. In the popped up window, right click->plot what?
+8. type in "exIClmp.i" and hit enter
+9. Click tools->runcontrol from GUI menu
+10. in "Continue till (ms)" type 500 and hit enter
+11. Click "Init & Run"
 
-Delivery of an input event (i.e. via a NetCon) triggers a
-single current pulse of user-specified amplitude and duration.
-Input events that arrive during an ongoing pulse are ignored.
+Loizos Paper Citation:
+K. Loizos et al, "Increasing electrical stimulation efficacy in degenerated retina: stimulus waveform design in a multiscale computational model," IEEE Transactions on Neural Systems and Rehabilitation Engineering, vol. 26, no. 6, pp. 1111-1120, 2018. Link to the paper
 
-test_1_and_2.hoc
-A GUI-constructed experimental rig for testing Ipulse1 and Ipulse2.
 
-test_3.hoc
-Tests Ipulse3.
+
